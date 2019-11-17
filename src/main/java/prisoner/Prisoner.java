@@ -1,3 +1,7 @@
+package prisoner;
+
+import strategies.PrisonerStrategy;
+
 public class Prisoner {
     private final Integer id;
     private PrisonerStrategy strategy;
