@@ -13,6 +13,6 @@ public class CopyStrategy implements PrisonerStrategy {
     public PrisonerAction getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
         if(history.isEmpty()) return PrisonerAction.COOPERATION;
         Pair<PrisonerAction, PrisonerAction> turn = history.get(history.size() - 1);
-        return (3-playerId) == 2 ? turn.getSecond() : turn.getFirst();
+        return playerId == 1 ? turn.getSecond() : turn.getFirst();
     }
 }
