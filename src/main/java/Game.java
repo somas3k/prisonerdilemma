@@ -1,7 +1,11 @@
 import org.apache.commons.math3.distribution.GeometricDistribution;
 import org.apache.commons.math3.util.Pair;
+import prisoner.Prisoner;
+import prisoner.PrisonerAction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Game {
@@ -10,6 +14,19 @@ public class Game {
     private final Prisoner player1;
     private final Prisoner player2;
     private int numberOfRounds;
+    private List<Pair<PrisonerAction, PrisonerAction>> history = new ArrayList<>();
+
+    public Prisoner getPlayer1() {
+        return player1;
+    }
+
+    public Prisoner getPlayer2() {
+        return player2;
+    }
+
+    public List<Pair<PrisonerAction, PrisonerAction>> getHistory() {
+        return history;
+    }
 
     Game(Prisoner player1, Prisoner player2) {
         this.player1 = player1;
@@ -18,12 +35,11 @@ public class Game {
 
     void play() {
         numberOfRounds = distribution.sample();
-        Map<Integer, Pair<PrisonerAction, PrisonerAction>> history = new HashMap<>();
         for (int round = 1; round <= numberOfRounds; round++) {
-            PrisonerAction prisonerAction1 = player1.getStrategy().getAction(history);
-            PrisonerAction prisonerAction2 = player2.getStrategy().getAction(history);
+            PrisonerAction prisonerAction1 = player1.getStrategy().getAction(1, history);
+            PrisonerAction prisonerAction2 = player2.getStrategy().getAction(2, history);
             calculateAndSavePointsForActions(prisonerAction1, prisonerAction2);
-            history.put(round, Pair.create(prisonerAction1, prisonerAction2));
+            history.add(round, Pair.create(prisonerAction1, prisonerAction2));
         }
     }
 
@@ -46,15 +62,15 @@ public class Game {
 
         if (prisonerAction1 == PrisonerAction.COOPERATION) {
             if (prisonerAction2 == PrisonerAction.COOPERATION) {
-                prisonerPoints1 = prisonerPoints2 = 5;
+                prisonerPoints1 = prisonerPoints2 = 3;
             } else {
-                prisonerPoints2 = 6;
+                prisonerPoints2 = 5;
             }
         } else {
             if (prisonerAction2 == PrisonerAction.BETRAYAL) {
                 prisonerPoints1 = prisonerPoints2 = 1;
             } else {
-                prisonerPoints1 = 6;
+                prisonerPoints1 = 5;
             }
         }
         points.merge(player1, prisonerPoints1, Integer::sum);
