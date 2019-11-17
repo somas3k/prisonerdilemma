@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public class AlwaysCooperateStrategy implements PrisonerStrategy {
-    ///zawsze kooperuje
     @Override
-    public PrisonerAction getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
-        return PrisonerAction.COOPERATION;
+    public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
+        String strategyName = "AlwaysCooperate";
+        return Pair.create(strategyName, PrisonerAction.COOPERATION);
     }
 }

@@ -10,11 +10,13 @@ public class RevengeStrategy implements PrisonerStrategy {
 
     ///zawsze kooperuje, jezeli przeciwnik zdradzil chociaz raz to zawsze zdradza
     @Override
-    public PrisonerAction getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
+    public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
+        PrisonerAction prisonerAction = PrisonerAction.COOPERATION;
         for (Pair<PrisonerAction, PrisonerAction> turn : history) {
             if ((playerId == 1 ? turn.getSecond() : turn.getFirst()) == PrisonerAction.BETRAYAL)
-                return PrisonerAction.BETRAYAL;
+                prisonerAction = PrisonerAction.BETRAYAL;
         }
-        return PrisonerAction.COOPERATION;
+        String strategyName = "Revenge";
+        return Pair.create(strategyName, prisonerAction);
     }
 }

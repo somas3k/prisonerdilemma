@@ -13,27 +13,31 @@ public class WSLSStrategy implements PrisonerStrategy {
     ///jezeli ostatni wynik byl dla nas pozytywny to zostajemy, jak negatywny to zmieniamy
 
     @Override
-    public PrisonerAction getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
-        if(history.isEmpty()) return PrisonerAction.COOPERATION;
-        Pair<PrisonerAction, PrisonerAction> lastTurn = history.get(history.size() - 1);
-        PrisonerAction myAction = playerId == 1 ? lastTurn.getFirst() : lastTurn.getSecond();
-        PrisonerAction enemyAction = playerId == 1 ? lastTurn.getSecond() : lastTurn.getFirst();
-        if(myAction.equals(PrisonerAction.COOPERATION)){
-            ///jezeli zdradzil to dostalismy 0, wiec zmieniamy
-            if(enemyAction.equals(PrisonerAction.BETRAYAL)){
-                return PrisonerAction.BETRAYAL;
-            } else{
-                return myAction;
+    public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
+        PrisonerAction prisonerAction = null;
+        if(history.isEmpty()) prisonerAction = PrisonerAction.COOPERATION;
+        else {
+            Pair<PrisonerAction, PrisonerAction> lastTurn = history.get(history.size() - 1);
+            PrisonerAction myAction = playerId == 1 ? lastTurn.getFirst() : lastTurn.getSecond();
+            PrisonerAction enemyAction = playerId == 1 ? lastTurn.getSecond() : lastTurn.getFirst();
+            if(myAction.equals(PrisonerAction.COOPERATION)){
+                ///jezeli zdradzil to dostalismy 0, wiec zmieniamy
+                if(enemyAction.equals(PrisonerAction.BETRAYAL)){
+                    prisonerAction = PrisonerAction.BETRAYAL;
+                } else{
+                    prisonerAction = myAction;
+                }
+            }
+            else if(myAction.equals(PrisonerAction.BETRAYAL)){
+                ///jezeli zdradzil to dostalismy 1, wiec zmieniamy
+                if(enemyAction.equals(PrisonerAction.BETRAYAL)){
+                    prisonerAction = PrisonerAction.COOPERATION;
+                } else {
+                    prisonerAction = myAction;
+                }
             }
         }
-        else if(myAction.equals(PrisonerAction.BETRAYAL)){
-            ///jezeli zdradzil to dostalismy 1, wiec zmieniamy
-            if(enemyAction.equals(PrisonerAction.BETRAYAL)){
-                return PrisonerAction.COOPERATION;
-            } else {
-                return myAction;
-            }
-        }
-        return null;
+        String strategyName = "WSLS";
+        return Pair.create(strategyName, prisonerAction);
     }
 }
