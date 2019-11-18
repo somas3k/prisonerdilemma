@@ -56,6 +56,45 @@ public class Main {
         }
     }
 
+    private static void printStats(List<Game> games){
+        String player1 = games.get(0).getPlayer1().getId().toString();
+        String player2 = games.get(0).getPlayer2().getId().toString();
+        double totalTurns = 0;
+        double totalPointsP1 = 0; /// wszystkie punkty z wszystkich gier przez ilosc tur
+        double totalPointsP2 = 0; /// wszystkie punkty z wszystkich gier przez ilosc tur
+
+        for(Game game: games) {
+            List<Pair<PrisonerAction, PrisonerAction>> gameHistory = game.getHistory();
+            int prisonerTotalPoints1 = 0;
+            int prisonerTotalPoints2 = 0;
+            for (int i = 0; i < gameHistory.size(); i++) {
+                Integer prisonerPoints1 = 0;
+                Integer prisonerPoints2 = 0;
+                PrisonerAction prisonerAction1 = gameHistory.get(i).getFirst();
+                PrisonerAction prisonerAction2 = gameHistory.get(i).getSecond();
+                if (prisonerAction1 == PrisonerAction.COOPERATION) {
+                    if (prisonerAction2 == PrisonerAction.COOPERATION) {
+                        prisonerPoints1 = prisonerPoints2 = 3;
+                    } else {
+                        prisonerPoints2 = 5;
+                    }
+                } else {
+                    if (prisonerAction2 == PrisonerAction.BETRAYAL) {
+                        prisonerPoints1 = prisonerPoints2 = 1;
+                    } else {
+                        prisonerPoints1 = 5;
+                    }
+                }
+                prisonerTotalPoints1 += prisonerPoints1;
+                prisonerTotalPoints2 += prisonerPoints2;
+                totalTurns++;
+            }
+            totalPointsP1 += prisonerTotalPoints1;
+            totalPointsP2 += prisonerTotalPoints2;
+        }
+        System.out.println(totalPointsP1/totalTurns + ";" + totalPointsP2/totalTurns + ";" + totalPointsP1/games.size() + ";" + totalPointsP2/games.size());
+    }
+
     public static void main(String[] args) {
         Prisoner player1 = new Prisoner(1, new RandomStrategy());
         Prisoner player2 = new Prisoner(2, new RevengeStrategy());
@@ -77,13 +116,15 @@ public class Main {
                     game.play();
                     games.add(game);
                 }
-                /// wypisze do pliku wszystkie
-                printGames(games);
-                ///wypisze na ekran
-                for (Game game : games) {
-                    printGame(game, System.out);
-                }
-
+//                /// wypisze do pliku wszystkie
+//                printGames(games);
+//                ///wypisze na ekran
+//                for (Game game : games) {
+//                    printGame(game, System.out);
+//                }
+                /// wypisuje srednia ilosc punktow zdobytych w 1 turze dla gracza pierwszego i drugiego
+                /// wypisuje srednia z punktow zdobytych we wszystkich grach dla gracza pierwszego i drugiego
+                printStats(games);
             }
         }
     }
