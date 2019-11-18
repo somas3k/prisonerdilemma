@@ -3,16 +3,18 @@ import prisoner.PrisonerAction;
 import strategies.*;
 import org.apache.commons.math3.util.Pair;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void printGame(Game game) {
+    private static void printGame(Game game, PrintStream out) {
         List<Pair<PrisonerAction, PrisonerAction>> gameHistory = game.getHistory();
         List<Pair<String, String>> strategyHistory = game.getStrategyHistory();
-        System.out.println("player" + game.getPlayer1().getId() + ";player" + game.getPlayer2().getId()
+        out.println("player" + game.getPlayer1().getId() + ";player" + game.getPlayer2().getId()
                 + ";playersum" + game.getPlayer1().getId() + ";playersum" + game.getPlayer2().getId()
-                +";strategy" + game.getPlayer1().getId() + ";strategy" + game.getPlayer2().getId());
+                + ";strategy" + game.getPlayer1().getId() + ";strategy" + game.getPlayer2().getId());
         int prisonerTotalPoints1 = 0;
         int prisonerTotalPoints2 = 0;
         for (int i = 0; i < gameHistory.size(); i++) {
@@ -37,9 +39,21 @@ public class Main {
             }
             prisonerTotalPoints1 += prisonerPoints1;
             prisonerTotalPoints2 += prisonerPoints2;
-            System.out.println(prisonerPoints1 + ";" + prisonerPoints2 + ";" + prisonerTotalPoints1 + ";" + prisonerTotalPoints2 + ";" + strategy1 + ":" + strategy2);
+            out.println(prisonerPoints1 + ";" + prisonerPoints2 + ";" + prisonerTotalPoints1 + ";" + prisonerTotalPoints2 + ";" + strategy1 + ":" + strategy2);
         }
-        System.out.println();
+        out.println();
+    }
+
+    private static void printGames(List<Game> games) {
+        String player1 = games.get(0).getPlayer1().getId().toString();
+        String player2 = games.get(0).getPlayer2().getId().toString();
+        try (PrintStream out = new PrintStream(player1 + player2 + ".txt")) {
+            for (Game game : games) {
+                printGame(game, out);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -49,21 +63,28 @@ public class Main {
         Prisoner player4 = new Prisoner(4, new CompositeStrategySimple());
         Prisoner player5 = new Prisoner(5, new CompositeStrategyComplex());
         List<Prisoner> prisoners = new ArrayList<>();
-        List<Game> games = new ArrayList<>();
         prisoners.add(player1);
         prisoners.add(player2);
         prisoners.add(player3);
         prisoners.add(player4);
         prisoners.add(player5);
+
         for (int i = 0; i < 5; i++) {
             for (int j = i + 1; j < 5; j++) {
-                Game game = new Game(prisoners.get(i), prisoners.get(j));
-                game.play();
-                games.add(game);
+                List<Game> games = new ArrayList<>();
+                for (int k = 0; k < 100; k++) {
+                    Game game = new Game(prisoners.get(i), prisoners.get(j));
+                    game.play();
+                    games.add(game);
+                }
+                /// wypisze do pliku wszystkie
+                printGames(games);
+                ///wypisze na ekran
+                for (Game game : games) {
+                    printGame(game, System.out);
+                }
+
             }
-        }
-        for (Game game : games) {
-            printGame(game);
         }
     }
 }

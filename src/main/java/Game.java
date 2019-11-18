@@ -4,21 +4,20 @@ import prisoner.Prisoner;
 import prisoner.PrisonerAction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class Game {
     private final Prisoner player1;
     private final Prisoner player2;
-    private int numberOfRounds = 10;
+    private int numberOfRounds;
     private List<Pair<PrisonerAction, PrisonerAction>> history = new ArrayList<>();
+    private List<Pair<String, String>> strategyHistory = new ArrayList<>();
+    private final GeometricDistribution distribution = new GeometricDistribution(1d / 101);
 
     public List<Pair<String, String>> getStrategyHistory() {
         return strategyHistory;
     }
-
-    private List<Pair<String, String>> strategyHistory = new ArrayList<>();
 
     public Prisoner getPlayer1() {
         return player1;
@@ -38,6 +37,7 @@ public class Game {
     }
 
     void play() {
+        numberOfRounds = distribution.sample();
         for (int round = 1; round <= numberOfRounds; round++) {
             Pair<String, PrisonerAction> prisonerAction1 = player1.getStrategy().getAction(1, history);
             Pair<String, PrisonerAction> prisonerAction2 = player2.getStrategy().getAction(2, history);
