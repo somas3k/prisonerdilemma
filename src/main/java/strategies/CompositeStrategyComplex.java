@@ -11,7 +11,7 @@ public class CompositeStrategyComplex implements PrisonerStrategy {
     private Integer counter;
     private List<PrisonerStrategy> complexStrategies;
 
-    public CompositeStrategyComplex(){
+    public CompositeStrategyComplex() {
         complexStrategies = new ArrayList<>();
         complexStrategies.add(new RevengeStrategy());
         complexStrategies.add(new WSLSStrategy());
@@ -20,6 +20,12 @@ public class CompositeStrategyComplex implements PrisonerStrategy {
 
     @Override
     public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
-        return counter++%2 == 0 ? complexStrategies.get(0).getAction(playerId, history) : complexStrategies.get(1).getAction(playerId, history);
+        return counter++ % 2 == 0 ? complexStrategies.get(0).getAction(playerId, history) :
+                complexStrategies.get(1).getAction(playerId, history);
+    }
+
+    @Override
+    public String getName() {
+        return "CompositeStrategyComplex";
     }
 }

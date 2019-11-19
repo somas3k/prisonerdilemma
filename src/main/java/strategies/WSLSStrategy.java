@@ -37,7 +37,11 @@ public class WSLSStrategy implements PrisonerStrategy {
                 }
             }
         }
-        String strategyName = "WSLS";
-        return Pair.create(strategyName, prisonerAction);
+        return Pair.create(getName(), prisonerAction);
+    }
+
+    @Override
+    public String getName() {
+        return "WinStayLoseSwapStrategy";
     }
 }

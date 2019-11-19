@@ -20,4 +20,9 @@ public class CopyStrategy implements PrisonerStrategy {
         String strategyName = "CopyStrategy";
         return Pair.create(strategyName, prisonerAction);
     }
+
+    @Override
+    public String getName() {
+        return "CopyStrategy";
+    }
 }

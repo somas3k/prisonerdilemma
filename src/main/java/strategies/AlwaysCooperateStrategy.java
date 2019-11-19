@@ -9,7 +9,11 @@ import java.util.Map;
 public class AlwaysCooperateStrategy implements PrisonerStrategy {
     @Override
     public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
-        String strategyName = "AlwaysCooperate";
-        return Pair.create(strategyName, PrisonerAction.COOPERATION);
+        return Pair.create(getName(), PrisonerAction.COOPERATION);
+    }
+
+    @Override
+    public String getName() {
+        return "AlwaysCooperate";
     }
 }

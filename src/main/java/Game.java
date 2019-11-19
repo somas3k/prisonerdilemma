@@ -45,4 +45,6 @@ public class Game {
             history.add(Pair.create(prisonerAction1.getSecond(), prisonerAction2.getSecond()));
         }
     }
+
+
 }

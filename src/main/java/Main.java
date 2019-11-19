@@ -56,43 +56,64 @@ public class Main {
         }
     }
 
-    private static void printStats(List<Game> games){
-        String player1 = games.get(0).getPlayer1().getId().toString();
-        String player2 = games.get(0).getPlayer2().getId().toString();
-        double totalTurns = 0;
-        double totalPointsP1 = 0; /// wszystkie punkty z wszystkich gier przez ilosc tur
-        double totalPointsP2 = 0; /// wszystkie punkty z wszystkich gier przez ilosc tur
-
-        for(Game game: games) {
+    private static void printStats(List<Game> games, Prisoner prisoner1, Prisoner prisoner2) {
+        int prisonerWins1 = 0;
+        int prisonerWins2 = 0;
+        for (Game game : games) {
             List<Pair<PrisonerAction, PrisonerAction>> gameHistory = game.getHistory();
-            int prisonerTotalPoints1 = 0;
-            int prisonerTotalPoints2 = 0;
-            for (int i = 0; i < gameHistory.size(); i++) {
-                Integer prisonerPoints1 = 0;
-                Integer prisonerPoints2 = 0;
-                PrisonerAction prisonerAction1 = gameHistory.get(i).getFirst();
-                PrisonerAction prisonerAction2 = gameHistory.get(i).getSecond();
-                if (prisonerAction1 == PrisonerAction.COOPERATION) {
-                    if (prisonerAction2 == PrisonerAction.COOPERATION) {
-                        prisonerPoints1 = prisonerPoints2 = 3;
-                    } else {
-                        prisonerPoints2 = 5;
-                    }
-                } else {
-                    if (prisonerAction2 == PrisonerAction.BETRAYAL) {
-                        prisonerPoints1 = prisonerPoints2 = 1;
-                    } else {
-                        prisonerPoints1 = 5;
-                    }
-                }
-                prisonerTotalPoints1 += prisonerPoints1;
-                prisonerTotalPoints2 += prisonerPoints2;
-                totalTurns++;
+            double totalPointsP1 = 0;
+            double totalPointsP2 = 0;
+            for (Pair<PrisonerAction, PrisonerAction> prisonerActionPrisonerActionPair : gameHistory) {
+                Pair<Integer, Integer> points = getPoints(prisonerActionPrisonerActionPair.getFirst(), prisonerActionPrisonerActionPair.getSecond());
+                totalPointsP1 += points.getFirst();
+                totalPointsP2 += points.getSecond();
             }
-            totalPointsP1 += prisonerTotalPoints1;
-            totalPointsP2 += prisonerTotalPoints2;
+            if (totalPointsP1 > totalPointsP2) {
+                prisonerWins1++;
+            }
+            if (totalPointsP2 > totalPointsP1) {
+                prisonerWins2++;
+            }
         }
-        System.out.println(totalPointsP1/totalTurns + ";" + totalPointsP2/totalTurns + ";" + totalPointsP1/games.size() + ";" + totalPointsP2/games.size());
+        summary(prisoner1, prisoner2, prisonerWins1, prisonerWins2);
+    }
+
+    private static void summary(Prisoner prisoner1, Prisoner prisoner2, int prisonerWins1, int prisonerWins2) {
+        String s1 = prisoner1.getStrategy().getName();
+        String s2 = prisoner2.getStrategy().getName();
+
+        if (prisonerWins1 > prisonerWins2) {
+            System.out.println(String.format("%s vs %s, winner is %s; points: %d %d",
+                    s1, s2, s1, prisonerWins1, prisonerWins2));
+        }
+        if (prisonerWins1 < prisonerWins2) {
+            System.out.println(String.format("%s vs %s, winner is %s; points: %d %d",
+                    s1, s2, s2, prisonerWins1, prisonerWins2));
+        }
+        if (prisonerWins1 == prisonerWins2) {
+            System.out.println(String.format("%s vs %s, draw",
+                    s1, s2));
+        }
+    }
+
+    private static Pair<Integer, Integer> getPoints(PrisonerAction prisonerAction1, PrisonerAction prisonerAction2) {
+        int prisonerPoints1 = 0;
+        int prisonerPoints2 = 0;
+
+        if (prisonerAction1 == PrisonerAction.COOPERATION) {
+            if (prisonerAction2 == PrisonerAction.COOPERATION) {
+                prisonerPoints1 = prisonerPoints2 = 3;
+            } else {
+                prisonerPoints2 = 5;
+            }
+        } else {
+            if (prisonerAction2 == PrisonerAction.BETRAYAL) {
+                prisonerPoints1 = prisonerPoints2 = 1;
+            } else {
+                prisonerPoints1 = 5;
+            }
+        }
+        return Pair.create(prisonerPoints1, prisonerPoints2);
     }
 
     public static void main(String[] args) {
@@ -111,7 +132,7 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             for (int j = i + 1; j < 5; j++) {
                 List<Game> games = new ArrayList<>();
-                for (int k = 0; k < 100; k++) {
+                for (int k = 0; k < 300; k++) {
                     Game game = new Game(prisoners.get(i), prisoners.get(j));
                     game.play();
                     games.add(game);
@@ -124,7 +145,7 @@ public class Main {
 //                }
                 /// wypisuje srednia ilosc punktow zdobytych w 1 turze dla gracza pierwszego i drugiego
                 /// wypisuje srednia z punktow zdobytych we wszystkich grach dla gracza pierwszego i drugiego
-                printStats(games);
+                printStats(games, prisoners.get(i), prisoners.get(j));
             }
         }
     }
