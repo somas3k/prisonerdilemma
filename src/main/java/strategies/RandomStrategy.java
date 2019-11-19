@@ -14,7 +14,11 @@ public class RandomStrategy implements PrisonerStrategy {
     public Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history) {
         Random random = new Random();
         PrisonerAction prisonerAction = random.nextBoolean() ? PrisonerAction.COOPERATION : PrisonerAction.BETRAYAL;
-        String strategyName = "Random";
-        return Pair.create(strategyName, prisonerAction);
+        return Pair.create(getName(), prisonerAction);
+    }
+
+    @Override
+    public String getName() {
+        return "Random";
     }
 }

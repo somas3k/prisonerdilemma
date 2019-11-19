@@ -16,7 +16,12 @@ public class RevengeStrategy implements PrisonerStrategy {
             if ((playerId == 1 ? turn.getSecond() : turn.getFirst()) == PrisonerAction.BETRAYAL)
                 prisonerAction = PrisonerAction.BETRAYAL;
         }
-        String strategyName = "Revenge";
-        return Pair.create(strategyName, prisonerAction);
+
+        return Pair.create(getName(), prisonerAction);
+    }
+
+    @Override
+    public String getName() {
+        return "Revenge";
     }
 }

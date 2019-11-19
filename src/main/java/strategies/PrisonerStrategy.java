@@ -8,4 +8,6 @@ import java.util.Map;
 
 public interface PrisonerStrategy {
     Pair<String, PrisonerAction> getAction(Integer playerId, List<Pair<PrisonerAction, PrisonerAction>> history);
+
+    String getName();
 }

@@ -22,4 +22,9 @@ public class CompositeStrategySimple implements PrisonerStrategy {
         Random random = new Random();
         return simpleStrategies.get(Math.abs(random.nextInt()%3)).getAction(playerId, history);
     }
+
+    @Override
+    public String getName() {
+        return "CompositeStrategySimple";
+    }
 }
